@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator with Random Numbers</title>
+</head>
+
+<body>
+  <h1>Simple Calculator with Random Number Generator</h1>
+  <input type="number" id="num1" placeholder="Enter first number">
+  <input type="number" id="num2" placeholder="Enter second number">
+  <br><br>
+  <button onclick="calculate('add')">Add</button>
+  <button onclick="calculate('subtract')">Subtract</button>
+  <button onclick="calculate('multiply')">Multiply</button>
+  <button onclick="calculate('divide')">Divide</button>
+  <br><br>
+  <p id="result"></p>
+  <script src="/socket.io/socket.io.js"></script> <!-- Include socket.io client -->
+  <script>
+    function calculate(operation) {
+      const num1 = document.getElementById('num1').value;
+      const num2 = document.getElementById('num2').value;
+      fetch(`/${operation}?num1=${num1}&num2=${num2}`)
+        .then(response => response.text())
+        .then(result => {
+          document.getElementById('result').innerText = result;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Connect to socket.io and listen for random numbers
+    window.onload = function () {
+      const socket = io();
+      socket.on('randomNumber', function (number) {
+        console.log('Received random number:', number);
+      });
+    }
+  </script>
+</body>
+
+</html>
